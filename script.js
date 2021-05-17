@@ -4,6 +4,7 @@ const consoleTable = require("console.table");
 const {
   starterPrompt,
   addDepartmentPrompt,
+  addRolePrompts,
 } = require("./public/utils/inquirer_prompts");
 
 const connection = mysql.createConnection({
@@ -14,40 +15,43 @@ const connection = mysql.createConnection({
   database: "trackday",
 });
 
-const afterConnection = () => {
-  connection.query(
-    "SELECT * FROM employee LEFT JOIN role on employee.role_id = role.role_id;",
-    (err, res) => {
-      if (err) throw err;
-      console.log(res);
-      connection.end();
-    }
-  );
+const createNewDepartment = () => {
+  inquirer.prompt(addDepartmentPrompt).then((response) => {
+    console.log(response);
+    const departmentName = response.departmentName;
+    const query = connection.query(
+      "INSERT INTO department (name) VALUES (?)",
+      [departmentName],
+      (err, res) => {
+        if (err) throw err;
+        console.log(`${res.affectedRows} rows changed.`);
+      }
+    );
+    console.log(query.sql);
+  });
 };
 
-const createNewEntry = (table, values) => {
-  connection.query(
-    "INSERT INTO ? (name) VALUES (?)",
-    [table, values],
-    (err, res) => {
-      if (err) throw err;
-      console.log(res);
-      connection.end();
-    }
-  );
+const createNewRole = () => {
+  connection.query("SELECT department_id, name FROM department", (err, res) => {
+    if (err) throw err;
+    const departmentMap = res.map((element) => [
+      element.department_id,
+      `${element.name}`,
+    ]);
+    const nameMap = res.map((element) => element.name);
+    const promptTemplate = addRolePrompts;
+    promptTemplate[0].choices = nameMap;
+    inquirer
+      .prompt(promptTemplate)
+      .then(({ department, roleName }) => console.log(department, roleName));
+  });
 };
-
-connection.connect((err) => {
-  if (err) throw err;
-  console.log(`connected as id ${connection.threadId}`);
-});
 
 inquirer.prompt(starterPrompt).then(({ mainOptions }) => {
   switch (mainOptions) {
     case "Add Department":
-      let table = mysql.raw('department');
-      inquirer.prompt(addDepartmentPrompt).then(({ departmentName }) => {
-        createNewEntry(table, departmentName);
-      });
+      return createNewDepartment();
+    case "Add Role":
+      return createNewRole();
   }
 });

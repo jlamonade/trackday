@@ -25,6 +25,14 @@ const addDepartmentPrompt = [
 
 const addRolePrompts = [
   {
+    type: "list",
+    name: "department",
+    message: "Choose department: ",
+    choices: [
+      // populated by function
+    ]
+  },
+  {
     type: "input",
     name: "roleName",
     message: "What would you like to name the role?"
@@ -44,4 +52,4 @@ const addEmployeePrompts = [
   }
 ]
 
-module.exports = { starterPrompt, addDepartmentPrompt }
+module.exports = { starterPrompt, addDepartmentPrompt, addRolePrompts }
