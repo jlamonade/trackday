@@ -1,6 +1,6 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
-const consoleTable = require("console.table");
+const cTable = require("console.table");
 const {
   starterPrompt,
   addDepartmentPrompt,
@@ -90,8 +90,28 @@ const createNewEmployee = () => {
             console.log(query.sql);
           }
         );
-        
       });
+  });
+};
+
+const viewDepartments = () => {
+  connection.query("SELECT * FROM department", (err, res) => {
+    if (err) throw err;
+    console.log(cTable.getTable(res));
+  });
+};
+
+const viewRoles = () => {
+  connection.query("SELECT * FROM role", (err, res) => {
+    if (err) throw err;
+    console.log(cTable.getTable(res));
+  });
+};
+
+const viewEmployees = () => {
+  connection.query("SELECT * FROM employee", (err, res) => {
+    if (err) throw err;
+    console.log(cTable.getTable(res));
   });
 };
 
@@ -103,5 +123,11 @@ inquirer.prompt(starterPrompt).then(({ mainOptions }) => {
       return createNewRole();
     case "Add Employee":
       return createNewEmployee();
+    case "View Departments":
+      return viewDepartments();
+    case "View Roles":
+      return viewRoles();
+    case "View Employees":
+      return viewEmployees();
   }
 });
