@@ -29,13 +29,19 @@ const addRolePrompts = [
     name: "roleName",
     message: "What would you like to name the role?"
   },
-  {
-    type: "list",
-    name: "roleDepartment",
-    message: "What department does this role belong to?"
-  }
 ];
 
 const addEmployeePrompts = [
-
+  {
+    type: "input",
+    name: "employeeFirsName",
+    message: "First name?"
+  },
+  {
+    type: "input",
+    name: "employeeLastName",
+    message: "Last name?"
+  }
 ]
+
+module.exports = { starterPrompt, addDepartmentPrompt }
