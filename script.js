@@ -5,6 +5,7 @@ const {
   starterPrompt,
   addDepartmentPrompt,
   addRolePrompts,
+  addEmployeePrompts,
 } = require("./public/utils/inquirer_prompts");
 
 const connection = mysql.createConnection({
@@ -32,7 +33,7 @@ const createNewDepartment = () => {
 };
 
 const createNewRole = () => {
-  connection.query("SELECT department_id, name FROM department", (err, res) => {
+  connection.query("SELECT name FROM department", (err, res) => {
     if (err) throw err;
     // const departmentArray = res.map((element) => [
     //   element.department_id,
@@ -48,13 +49,13 @@ const createNewRole = () => {
         [department],
         (err, res) => {
           if (err) throw err;
-          const departmentID = res[0].department_id
+          const departmentID = res[0].department_id;
           const query = connection.query(
             "INSERT INTO role (title, department_id) VALUES (?, ?)",
             [role, departmentID],
             (err, res) => {
               if (err) throw err;
-              console.log(`${res.affectedRows} rows updated.`)
+              console.log(`${res.affectedRows} rows updated.`);
             }
           );
           console.log(query.sql);
@@ -64,11 +65,43 @@ const createNewRole = () => {
   });
 };
 
+const createNewEmployee = () => {
+  connection.query("SELECT title FROM role", (err, res) => {
+    if (err) throw err;
+    const titleArray = res.map((element) => element.title);
+    const promptTemplate = addEmployeePrompts;
+    promptTemplate[2].choices = titleArray;
+    inquirer
+      .prompt(promptTemplate)
+      .then(({ employeeFirstName, employeeLastName, role }) => {
+        connection.query(
+          "SELECT role_id FROM role WHERE title = ?",
+          [role],
+          (err, res) => {
+            if (err) throw err;
+            const query = connection.query(
+              "INSERT INTO employee (first_name, last_name, role_id) VALUES (?, ?, ?)",
+              [employeeFirstName, employeeLastName, res[0].role_id],
+              (err, res) => {
+                if (err) throw err;
+                console.log(`${res.affectedRows} rows updated.`);
+              }
+            );
+            console.log(query.sql);
+          }
+        );
+        
+      });
+  });
+};
+
 inquirer.prompt(starterPrompt).then(({ mainOptions }) => {
   switch (mainOptions) {
     case "Add Department":
       return createNewDepartment();
     case "Add Role":
       return createNewRole();
+    case "Add Employee":
+      return createNewEmployee();
   }
 });
