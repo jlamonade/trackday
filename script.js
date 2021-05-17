@@ -102,17 +102,23 @@ const viewDepartments = () => {
 };
 
 const viewRoles = () => {
-  connection.query("SELECT * FROM role", (err, res) => {
-    if (err) throw err;
-    console.log(cTable.getTable(res));
-  });
+  connection.query(
+    "SELECT title, department.name AS department FROM role LEFT JOIN department ON role.department_id = department.department_id",
+    (err, res) => {
+      if (err) throw err;
+      console.log(cTable.getTable(res));
+    }
+  );
 };
 
 const viewEmployees = () => {
-  connection.query("SELECT * FROM employee", (err, res) => {
-    if (err) throw err;
-    console.log(cTable.getTable(res));
-  });
+  connection.query(
+    "SELECT CONCAT(e.first_name, ' ', e.last_name) AS name, role.title AS role, department.name AS department, CONCAT(m.first_name, ' ', m.last_name) AS manager FROM employee e JOIN role ON e.role_id = role.role_id JOIN department ON role.department_id = department.department_id LEFT JOIN employee m ON e.manager_id = m.employee_id;",
+    (err, res) => {
+      if (err) throw err;
+      console.log(cTable.getTable(res));
+    }
+  );
 };
 
 inquirer.prompt(starterPrompt).then(({ mainOptions }) => {
