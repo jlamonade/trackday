@@ -34,16 +34,33 @@ const createNewDepartment = () => {
 const createNewRole = () => {
   connection.query("SELECT department_id, name FROM department", (err, res) => {
     if (err) throw err;
-    const departmentMap = res.map((element) => [
-      element.department_id,
-      `${element.name}`,
-    ]);
-    const nameMap = res.map((element) => element.name);
+    // const departmentArray = res.map((element) => [
+    //   element.department_id,
+    //   `${element.name}`,
+    // ]);
+    const nameArray = res.map((element) => element.name);
     const promptTemplate = addRolePrompts;
-    promptTemplate[0].choices = nameMap;
-    inquirer
-      .prompt(promptTemplate)
-      .then(({ department, roleName }) => console.log(department, roleName));
+    promptTemplate[0].choices = nameArray;
+    inquirer.prompt(promptTemplate).then(({ department, roleName }) => {
+      const role = roleName;
+      connection.query(
+        "SELECT department_id FROM department WHERE name = ?",
+        [department],
+        (err, res) => {
+          if (err) throw err;
+          const departmentID = res[0].department_id
+          const query = connection.query(
+            "INSERT INTO role (title, department_id) VALUES (?, ?)",
+            [role, departmentID],
+            (err, res) => {
+              if (err) throw err;
+              console.log(`${res.affectedRows} rows updated.`)
+            }
+          );
+          console.log(query.sql);
+        }
+      );
+    });
   });
 };
 
