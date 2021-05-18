@@ -67,7 +67,27 @@ const updateEmployeePrompts = [
     message: "Choose employee to update: ",
     choices: [],
   },
+  {
+    type: "list",
+    name: "employeeOption",
+    message: "What would you like to update?",
+    choices: [
+      "Update Role",
+      "Update Manager",
+      "Update Salary"
+      // TODO: Add salary to schema
+    ]
+  }
 ];
+
+const updateEmployeeRolePrompt = {
+  type: "list",
+  name: "newRole",
+  message: "Choose a new role: ",
+  choices: {
+    // fill by function
+  }
+}
 
 module.exports = {
   starterPrompt,
@@ -75,4 +95,5 @@ module.exports = {
   addRolePrompts,
   addEmployeePrompts,
   updateEmployeePrompts,
+  updateEmployeeRolePrompt
 };

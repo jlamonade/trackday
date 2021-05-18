@@ -7,6 +7,7 @@ const {
   addRolePrompts,
   addEmployeePrompts,
   updateEmployeePrompts,
+  updateEmployeeRolePrompt,
 } = require("./public/utils/inquirer_prompts");
 const { Choice } = require("./public/utils/classes");
 
@@ -33,7 +34,7 @@ const createNewDepartment = () => {
     console.log(query.sql);
   });
 };
-
+// TODO: update with choice constructor
 const createNewRole = () => {
   connection.query("SELECT name FROM department", (err, res) => {
     if (err) throw err;
@@ -66,15 +67,12 @@ const createNewRole = () => {
     });
   });
 };
-// TODO: create object array for choices for the prompts in this function
+
 const createNewEmployee = () => {
   connection.query("SELECT role_id, title FROM role", (err, res) => {
     if (err) throw err;
-    const choicesArray = res.map(
-      (element) => new Choice(element.title, element.role_id)
-    );
     const promptTemplate = addEmployeePrompts;
-    promptTemplate[2].choices = choicesArray;
+    promptTemplate[2].choices = createRoleChoicesArray(res);
     // console.log(choicesArray);
     inquirer
       .prompt(promptTemplate)
@@ -90,6 +88,10 @@ const createNewEmployee = () => {
         console.log(query.sql);
       });
   });
+};
+// TODO: mvoe this function to utils
+const createRoleChoicesArray = (data) => {
+  return data.map((element) => new Choice(element.title, element.role_id));
 };
 
 const viewDepartments = () => {
@@ -131,10 +133,38 @@ const updateEmployee = () => {
       const promptTemplate = updateEmployeePrompts;
       promptTemplate[0].choices = choicesArray;
       inquirer.prompt(promptTemplate).then((response) => {
-        console.log(response);
+        const employeeId = response.employeeId;
+        switch (response.employeeOption) {
+          case "Update Role":
+            return updateEmployeeRole(employeeId); // TODO: write function
+          case "Update Manager":
+            return updateEmployeeManager(); // TODO: write function
+          case "Update Salary":
+            return updateEmployeeSalary(); // TODO: write function
+        }
       });
     }
   );
+};
+
+const updateEmployeeRole = (employeeId) => {
+  connection.query("SELECT title, role_id FROM role", (err, res) => {
+    if (err) throw err;
+    const promptTemplate = updateEmployeeRolePrompt;
+    promptTemplate.choices = createRoleChoicesArray(res);
+    inquirer.prompt(promptTemplate).then((response) => {
+      const roleId = response.newRole;
+      const query = connection.query(
+        "UPDATE employee SET ? WHERE employee_id = ?",
+        [{ role_id: roleId }, employeeId],
+        (err, res) => {
+          if (err) throw err;
+          console.log(`${res.affectedRows} rows updated.`);
+        }
+      );
+      console.log(query.sql);
+    });
+  });
 };
 
 inquirer.prompt(starterPrompt).then(({ mainOptions }) => {
