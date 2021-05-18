@@ -77,7 +77,7 @@ const chooseRolePrompt = {
   choices: [
     // populated by function
   ],
-}
+};
 
 const addEmployeePrompts = [
   {
@@ -94,17 +94,21 @@ const addEmployeePrompts = [
   {
     type: "number",
     name: "salary",
-    message: "Salary?"
-  }
+    message: "Salary?",
+  },
 ];
 
+const chooseEmployeePrompt = {
+  type: "list",
+  name: "employeeId",
+  message: "Choose employee: ",
+  choices: [
+    // populated by function
+  ],
+}
+
 const updateEmployeePrompts = [
-  {
-    type: "list",
-    name: "employeeId",
-    message: "Choose employee to update: ",
-    choices: [],
-  },
+  chooseEmployeePrompt,
   {
     type: "list",
     name: "employeeOption",
@@ -136,8 +140,6 @@ const chooseManagerPrompt = {
   ],
 };
 
-
-
 const updateEmployeeSalaryPrompt = {
   type: "number",
   name: "salary",
@@ -158,4 +160,5 @@ module.exports = {
   employeeMenuPrompts,
   chooseDepartmentPrompt,
   chooseRolePrompt,
+  chooseEmployeePrompt,
 };

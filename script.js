@@ -15,6 +15,7 @@ const {
   employeeMenuPrompts,
   chooseDepartmentPrompt,
   chooseRolePrompt,
+  chooseEmployeePrompt,
 } = require("./public/utils/inquirer_prompts");
 const {
   createRoleChoicesArray,
@@ -245,15 +246,41 @@ const deleteRole = () => {
     if (err) throw err;
     const promptTemplate = chooseRolePrompt;
     promptTemplate.choices = createRoleChoicesArray(res);
-    inquirer.prompt(promptTemplate).then(response => {
-      connection.query("DELETE FROM role WHERE role_id = ?", [response.role], (err, res) => {
-        if (err) throw err;
-        console.log(`${res.affectedRows} rows updated`);
-        viewRoles();
-      })
-    })
-  })
-}
+    inquirer.prompt(promptTemplate).then((response) => {
+      connection.query(
+        "DELETE FROM role WHERE role_id = ?",
+        [response.role],
+        (err, res) => {
+          if (err) throw err;
+          console.log(`${res.affectedRows} rows updated`);
+          viewRoles();
+        }
+      );
+    });
+  });
+};
+
+const deleteEmployee = () => {
+  connection.query(
+    "SELECT employee_id, CONCAT(first_name, ' ', last_name) AS name from employee",
+    (err, res) => {
+      if (err) throw err;
+      const promptTemplate = chooseEmployeePrompt;
+      promptTemplate.choices = createEmployeeChoiceArray(res);
+      inquirer.prompt(promptTemplate).then((response) => {
+        connection.query(
+          "DELETE FROM employee WHERE employee_id = ?",
+          [response.employeeId],
+          (err, res) => {
+            if (err) throw err;
+            console.log(`${res.affectedRows} rows updated`);
+            viewEmployees();
+          }
+        );
+      });
+    }
+  );
+};
 
 const departmentMenu = () => {
   inquirer.prompt(departmentMenuPrompts).then((response) => {
@@ -296,7 +323,7 @@ const employeeMenu = () => {
         return createNewEmployee();
       case "Update Employee":
         return updateEmployee(); // write function
-      case "Delete Role":
+      case "Delete Employee":
         return deleteEmployee(); // write function
     }
   });
