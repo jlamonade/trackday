@@ -11,7 +11,7 @@ const {
   chooseManagerPrompt,
   updateEmployeeSalaryPrompt,
 } = require("./public/utils/inquirer_prompts");
-const { Choice } = require("./public/utils/classes");
+const { createRoleChoicesArray, createManagerChoicesArray } = require("./public/utils/util");
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -90,10 +90,6 @@ const createNewEmployee = () => {
         console.log(query.sql);
       });
   });
-};
-// TODO: mvoe this function to utils
-const createRoleChoicesArray = (data) => {
-  return data.map((element) => new Choice(element.title, element.role_id));
 };
 
 const viewDepartments = () => {
@@ -207,11 +203,6 @@ const updateEmployeeSalary = (employeeId) => {
   });
 };
 
-// TODO: move to utils
-const createManagerChoicesArray = (data) => {
-  return data.map((element) => new Choice(element.name, element.employee_id));
-};
-
 const viewEmployeesByManager = () => {
   connection.query(
     "SELECT CONCAT(first_name, ' ', last_name) AS name, employee_id, role.is_manager FROM employee JOIN role ON role.role_id = employee.role_id WHERE role.is_manager = true",
@@ -227,6 +218,7 @@ const viewEmployeesByManager = () => {
           (err, res) => {
             if (err) throw err;
             console.log(cTable.getTable(res));
+            startingMenu();
           }
         );
         console.log(query.sql)
