@@ -70,6 +70,15 @@ const addRolePrompts = [
   },
 ];
 
+const chooseRolePrompt = {
+  type: "list",
+  name: "role",
+  message: "Role?",
+  choices: [
+    // populated by function
+  ],
+}
+
 const addEmployeePrompts = [
   {
     type: "input",
@@ -81,14 +90,7 @@ const addEmployeePrompts = [
     name: "employeeLastName",
     message: "Last name?",
   },
-  {
-    type: "list",
-    name: "role",
-    message: "Role?",
-    choices: [
-      // populated by function
-    ],
-  },
+  chooseRolePrompt,
   {
     type: "number",
     name: "salary",
@@ -155,4 +157,5 @@ module.exports = {
   roleMenuPrompts,
   employeeMenuPrompts,
   chooseDepartmentPrompt,
+  chooseRolePrompt,
 };

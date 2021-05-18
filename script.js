@@ -14,6 +14,7 @@ const {
   roleMenuPrompts,
   employeeMenuPrompts,
   chooseDepartmentPrompt,
+  chooseRolePrompt,
 } = require("./public/utils/inquirer_prompts");
 const {
   createRoleChoicesArray,
@@ -238,6 +239,21 @@ const deleteDepartment = () => {
     });
   });
 };
+
+const deleteRole = () => {
+  connection.query("SELECT role_id, title FROM role", (err, res) => {
+    if (err) throw err;
+    const promptTemplate = chooseRolePrompt;
+    promptTemplate.choices = createRoleChoicesArray(res);
+    inquirer.prompt(promptTemplate).then(response => {
+      connection.query("DELETE FROM role WHERE role_id = ?", [response.role], (err, res) => {
+        if (err) throw err;
+        console.log(`${res.affectedRows} rows updated`);
+        viewRoles();
+      })
+    })
+  })
+}
 
 const departmentMenu = () => {
   inquirer.prompt(departmentMenuPrompts).then((response) => {
