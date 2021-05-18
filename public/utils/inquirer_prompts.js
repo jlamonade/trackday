@@ -94,7 +94,7 @@ const updateEmployeeManagerPrompt = {
   name: "newManager",
   message: "Choose a new manager: ",
   choices: [
-    
+    // fill by function
   ]
 }
 
@@ -104,5 +104,6 @@ module.exports = {
   addRolePrompts,
   addEmployeePrompts,
   updateEmployeePrompts,
-  updateEmployeeRolePrompt
+  updateEmployeeRolePrompt,
+  updateEmployeeManagerPrompt
 };

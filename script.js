@@ -8,6 +8,7 @@ const {
   addEmployeePrompts,
   updateEmployeePrompts,
   updateEmployeeRolePrompt,
+  updateEmployeeManagerPrompt,
 } = require("./public/utils/inquirer_prompts");
 const { Choice } = require("./public/utils/classes");
 
@@ -94,11 +95,7 @@ const createRoleChoicesArray = (data) => {
   return data.map((element) => new Choice(element.title, element.role_id));
 };
 
-const createManagerChoicesArray = (data) => {
-  return data.map((element) => {
-    new Choice(element.name, element.employee_id);
-  });
-};
+
 
 const viewDepartments = () => {
   connection.query("SELECT * FROM department", (err, res) => {
@@ -142,11 +139,11 @@ const updateEmployee = () => {
         const employeeId = response.employeeId;
         switch (response.employeeOption) {
           case "Update Role":
-            return updateEmployeeRole(employeeId); // TODO: write function
+            return updateEmployeeRole(employeeId);
           case "Update Manager":
-            return updateEmployeeManager(); // TODO: write function
+            return updateEmployeeManager(employeeId); // TODO: write function
           case "Update Salary":
-            return updateEmployeeSalary(); // TODO: write function
+            return updateEmployeeSalary(employeeId); // TODO: write function
         }
       });
     }
@@ -172,14 +169,14 @@ const updateEmployeeRole = (employeeId) => {
     });
   });
 };
-// TODO: update function to manager
+
 const updateEmployeeManager = (employeeId) => {
   connection.query(
     "SELECT CONCAT(first_name, ' ', last_name) AS name, employee_id, role.is_manager FROM employee JOIN role ON role.role_id = employee.role_id WHERE role.is_manager = true;",
     (err, res) => {
       if (err) throw err;
       console.log(res);
-      const promptTemplate = updateEmployeeRolePrompt;
+      const promptTemplate = updateEmployeeManagerPrompt;
       promptTemplate.choices = createManagerChoicesArray(res);
       inquirer.prompt(promptTemplate).then((response) => {
         const roleId = response.newManager;
@@ -195,6 +192,10 @@ const updateEmployeeManager = (employeeId) => {
       });
     }
   );
+};
+
+const createManagerChoicesArray = (data) => {
+  return data.map((element) => new Choice(element.name, element.employee_id));
 };
 
 inquirer.prompt(starterPrompt).then(({ mainOptions }) => {
