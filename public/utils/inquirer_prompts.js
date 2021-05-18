@@ -10,7 +10,7 @@ const starterPrompt = [
       "View Departments",
       "View Roles",
       "View Employees",
-      "View Employees By Manger",
+      "View Employees By Manager",
       "Update Employee",
     ],
   },
@@ -90,10 +90,10 @@ const updateEmployeeRolePrompt = {
   }
 }
 
-const updateEmployeeManagerPrompt = {
+const chooseManagerPrompt = {
   type: "list",
-  name: "newManager",
-  message: "Choose a new manager: ",
+  name: "manager",
+  message: "Choose a manager: ",
   choices: [
     // fill by function
   ]
@@ -112,6 +112,6 @@ module.exports = {
   addEmployeePrompts,
   updateEmployeePrompts,
   updateEmployeeRolePrompt,
-  updateEmployeeManagerPrompt,
+  chooseManagerPrompt,
   updateEmployeeSalaryPrompt,
 };

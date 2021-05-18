@@ -8,7 +8,7 @@ const {
   addEmployeePrompts,
   updateEmployeePrompts,
   updateEmployeeRolePrompt,
-  updateEmployeeManagerPrompt,
+  chooseManagerPrompt,
   updateEmployeeSalaryPrompt,
 } = require("./public/utils/inquirer_prompts");
 const { Choice } = require("./public/utils/classes");
@@ -174,11 +174,10 @@ const updateEmployeeManager = (employeeId) => {
     "SELECT CONCAT(first_name, ' ', last_name) AS name, employee_id, role.is_manager FROM employee JOIN role ON role.role_id = employee.role_id WHERE role.is_manager = true;",
     (err, res) => {
       if (err) throw err;
-      console.log(res);
-      const promptTemplate = updateEmployeeManagerPrompt;
+      const promptTemplate = chooseManagerPrompt;
       promptTemplate.choices = createManagerChoicesArray(res);
       inquirer.prompt(promptTemplate).then((response) => {
-        const roleId = response.newManager;
+        const roleId = response.manager;
         const query = connection.query(
           "UPDATE employee SET ? WHERE employee_id = ?",
           [{ manager_id: roleId }, employeeId],
@@ -204,7 +203,7 @@ const updateEmployeeSalary = (employeeId) => {
         console.log(`${res.affectedRows} rows updated.`);
       }
     );
-    console.log(query.sql)
+    console.log(query.sql);
   });
 };
 
@@ -214,10 +213,27 @@ const createManagerChoicesArray = (data) => {
 };
 
 const viewEmployeesByManager = () => {
-  connection.query("SELECT CONCAT(first_name, ' ', last_name) AS name, employee_id, role.is_manager FROM employee JOIN role ON role.role_id = employee.role_id WHERE role.is_manager = true", (err, res) => {
-    console.log(res)
-  })
-}
+  connection.query(
+    "SELECT CONCAT(first_name, ' ', last_name) AS name, employee_id, role.is_manager FROM employee JOIN role ON role.role_id = employee.role_id WHERE role.is_manager = true",
+    (err, res) => {
+      if (err) throw err;
+      const promptTemplate = chooseManagerPrompt;
+      promptTemplate.choices = createManagerChoicesArray(res);
+      inquirer.prompt(chooseManagerPrompt).then((response) => {
+        const managerId = response.manager;
+        const query = connection.query(
+          "SELECT employee.employee_id, CONCAT(first_name, ' ', last_name) AS name, role.title FROM employee JOIN role ON employee.role_id = role.role_id WHERE employee.manager_id = ?",
+          [managerId],
+          (err, res) => {
+            if (err) throw err;
+            console.log(cTable.getTable(res));
+          }
+        );
+        console.log(query.sql)
+      });
+    }
+  );
+};
 
 inquirer.prompt(starterPrompt).then(({ mainOptions }) => {
   switch (mainOptions) {
