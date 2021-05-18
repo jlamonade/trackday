@@ -282,6 +282,25 @@ const deleteEmployee = () => {
   );
 };
 
+const viewBudgetsByDepartment = () => {
+  connection.query("SELECT department_id, name FROM department", (err, res) => {
+    if (err) throw err;
+    const promptTemplate = chooseDepartmentPrompt;
+    promptTemplate.choices = createDepartmentChoicesArray(res);
+    inquirer.prompt(promptTemplate).then((response) => {
+      connection.query(
+        "SELECT SUM(e.salary) AS department_budget FROM employee e JOIN role r ON e.role_id = r.role_id JOIN department d ON r.department_id = d.department_id WHERE d.department_id = ?",
+        [response.departmentId],
+        (err, res) => {
+          if (err) throw err;
+          console.log(cTable.getTable(res));
+          startingMenu();
+        }
+      );
+    });
+  });
+}
+
 const departmentMenu = () => {
   inquirer.prompt(departmentMenuPrompts).then((response) => {
     switch (response.option) {
@@ -290,7 +309,9 @@ const departmentMenu = () => {
       case "Add Departments":
         return createNewDepartment();
       case "Delete Department":
-        return deleteDepartment(); // write function
+        return deleteDepartment(); 
+      case "View Budgets":
+        return viewBudgetsByDepartment();
     }
   });
 };
@@ -303,7 +324,7 @@ const roleMenu = () => {
       case "Add Role":
         return createNewRole();
       case "Delete Role":
-        return deleteRole(); // write function
+        return deleteRole(); 
     }
   });
 };
@@ -318,9 +339,9 @@ const employeeMenu = () => {
       case "Add Employee":
         return createNewEmployee();
       case "Update Employee":
-        return updateEmployee(); // write function
+        return updateEmployee(); 
       case "Delete Employee":
-        return deleteEmployee(); // write function
+        return deleteEmployee(); 
     }
   });
 };

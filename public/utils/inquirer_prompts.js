@@ -15,6 +15,7 @@ const departmentMenuPrompts = {
     "View Departments",
     "Add Department",
     "Delete Department",
+    "View Budgets"
   ],
 };
 
