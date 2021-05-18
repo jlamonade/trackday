@@ -8,7 +8,7 @@ const {
   addEmployeePrompts,
   updateEmployeePrompts,
 } = require("./public/utils/inquirer_prompts");
-const Choice = require("./public/utils/classes");
+const { Choice } = require("./public/utils/classes");
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -68,30 +68,26 @@ const createNewRole = () => {
 };
 // TODO: create object array for choices for the prompts in this function
 const createNewEmployee = () => {
-  connection.query("SELECT title FROM role", (err, res) => {
+  connection.query("SELECT role_id, title FROM role", (err, res) => {
     if (err) throw err;
-    const titleArray = res.map((element) => element.title);
+    const choicesArray = res.map(
+      (element) => new Choice(element.title, element.role_id)
+    );
     const promptTemplate = addEmployeePrompts;
-    promptTemplate[2].choices = titleArray;
+    promptTemplate[2].choices = choicesArray;
+    // console.log(choicesArray);
     inquirer
       .prompt(promptTemplate)
       .then(({ employeeFirstName, employeeLastName, role }) => {
-        connection.query(
-          "SELECT role_id FROM role WHERE title = ?",
-          [role],
+        const query = connection.query(
+          "INSERT INTO employee (first_name, last_name, role_id) VALUES (?, ?, ?)",
+          [employeeFirstName, employeeLastName, role],
           (err, res) => {
             if (err) throw err;
-            const query = connection.query(
-              "INSERT INTO employee (first_name, last_name, role_id) VALUES (?, ?, ?)",
-              [employeeFirstName, employeeLastName, res[0].role_id],
-              (err, res) => {
-                if (err) throw err;
-                console.log(`${res.affectedRows} rows updated.`);
-              }
-            );
-            console.log(query.sql);
+            console.log(`${res.affectedRows} rows updated.`);
           }
         );
+        console.log(query.sql);
       });
   });
 };
@@ -130,8 +126,8 @@ const updateEmployee = () => {
       if (err) throw err;
       // console.log(cTable.getTable(res));
       const choicesArray = res.map((element) => {
-        return new Choice(element.name, element.employee_id)
-      })
+        return new Choice(element.name, element.employee_id);
+      });
       const promptTemplate = updateEmployeePrompts;
       promptTemplate[0].choices = choicesArray;
       inquirer.prompt(promptTemplate).then((response) => {

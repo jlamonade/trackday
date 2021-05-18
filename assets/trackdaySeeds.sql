@@ -14,6 +14,7 @@ CREATE TABLE role(
 	role_id INTEGER AUTO_INCREMENT,
     title VARCHAR(30),
     department_id INT,
+    is_manager BOOLEAN,
     PRIMARY KEY (role_id),
     FOREIGN KEY (department_id) REFERENCES department(department_id)
 );
@@ -39,18 +40,18 @@ VALUES (3, 'designers');
 INSERT INTO department (department_id, name)
 VALUES (4, "test dept");
 
-INSERT INTO role (role_id, title, department_id) 
-VALUES (1, 'sales manager', 1);
+INSERT INTO role (role_id, title, department_id, is_manager) 
+VALUES (1, 'sales manager', 1, true);
 INSERT INTO role (role_id, title, department_id) 
 VALUES (2, 'salesperson', 1);
 INSERT INTO role (role_id, title, department_id) 
 VALUES (3, 'lead engineer', 2);
-INSERT INTO role (role_id, title, department_id) 
-VALUES (4, 'engineer', 2);
+INSERT INTO role (role_id, title, department_id, is_manager) 
+VALUES (4, 'engineer', 2, true);
 INSERT INTO role (role_id, title, department_id) 
 VALUES (5, 'QA', 2);
-INSERT INTO role (role_id, title, department_id) 
-VALUES (6, 'design manager', 3);
+INSERT INTO role (role_id, title, department_id, is_manager) 
+VALUES (6, 'design manager', 3, true);
 INSERT INTO role (role_id, title, department_id) 
 VALUES (7, 'UX', 3);
 INSERT INTO role (role_id, title, department_id) 
