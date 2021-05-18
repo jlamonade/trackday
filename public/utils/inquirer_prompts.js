@@ -4,18 +4,50 @@ const starterPrompt = [
     name: "mainOptions",
     message: "What would you like to do?",
     choices: [
-      "Add Department",
-      "Add Role",
-      "Add Employee",
-      "View Departments",
-      "View Roles",
-      "View Employees",
-      "View Employees By Manager",
-      "Update Employee",
+      "Departments",
+      "Roles",
+      "Employees",
       "Quit",
     ],
   },
 ];
+
+const departmentMenuPrompts = {
+  type: "list",
+  name: "option",
+  message: "What would you like to do?",
+  choices: [
+    "View Departments",
+    "Add Departments",
+    "Update Departments",
+    "Delete Departments"
+  ]
+};
+
+const roleMenuPrompts = {
+  type: "list",
+  name: "option",
+  message: "What would you like to do?",
+  choices: [
+    "View Roles",
+    "Add Role",
+    "Update Role",
+    "Delete Role"
+  ]
+};
+
+const employeeMenuPrompts = {
+  type: "list",
+  name: "option",
+  message: "What would you like to do?",
+  choices: [
+    "View Employees",
+    "View Employees By Manager",
+    "Add Employee",
+    "Update Employee",
+    "Delete Employee"
+  ]
+};
 
 const addDepartmentPrompt = [
   {
@@ -28,7 +60,7 @@ const addDepartmentPrompt = [
 const addRolePrompts = [
   {
     type: "list",
-    name: "department",
+    name: "departmentId",
     message: "Choose department: ",
     choices: [
       // populated by function
@@ -38,6 +70,11 @@ const addRolePrompts = [
     type: "input",
     name: "roleName",
     message: "What would you like to name the role?",
+  },
+  {
+    type: "confirm",
+    name: "isManager",
+    message: "Is this a manager role?"
   },
 ];
 
@@ -106,6 +143,8 @@ const updateEmployeeSalaryPrompt = {
   message: "Enter new salary: ",
 }
 
+
+
 module.exports = {
   starterPrompt,
   addDepartmentPrompt,
@@ -115,4 +154,7 @@ module.exports = {
   updateEmployeeRolePrompt,
   chooseManagerPrompt,
   updateEmployeeSalaryPrompt,
+  departmentMenuPrompts,
+  roleMenuPrompts,
+  employeeMenuPrompts,
 };

@@ -10,8 +10,15 @@ const {
   updateEmployeeRolePrompt,
   chooseManagerPrompt,
   updateEmployeeSalaryPrompt,
+  departmentMenuPrompts,
+  roleMenuPrompts,
+  employeeMenuPrompts,
 } = require("./public/utils/inquirer_prompts");
-const { createRoleChoicesArray, createManagerChoicesArray } = require("./public/utils/util");
+const {
+  createRoleChoicesArray,
+  createManagerChoicesArray,
+  createDepartmentChoicesArray,
+} = require("./public/utils/util");
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -31,39 +38,25 @@ const createNewDepartment = () => {
       (err, res) => {
         if (err) throw err;
         console.log(`${res.affectedRows} rows changed.`);
+        viewDepartments();
       }
     );
-    console.log(query.sql);
   });
 };
 // TODO: update with choice constructor
 const createNewRole = () => {
-  connection.query("SELECT name FROM department", (err, res) => {
+  connection.query("SELECT department_id, name FROM department", (err, res) => {
     if (err) throw err;
-    // const departmentArray = res.map((element) => [
-    //   element.department_id,
-    //   `${element.name}`,
-    // ]);
-    const nameArray = res.map((element) => element.name);
     const promptTemplate = addRolePrompts;
-    promptTemplate[0].choices = nameArray;
-    inquirer.prompt(promptTemplate).then(({ department, roleName }) => {
-      const role = roleName;
-      connection.query(
-        "SELECT department_id FROM department WHERE name = ?",
-        [department],
+    promptTemplate[0].choices = createDepartmentChoicesArray(res);
+    inquirer.prompt(promptTemplate).then((response) => {
+      const query = connection.query(
+        "INSERT INTO role (title, department_id, is_manager) VALUES (?, ?, ?)",
+        [response.roleName, response.departmentId, response.isManager],
         (err, res) => {
           if (err) throw err;
-          const departmentID = res[0].department_id;
-          const query = connection.query(
-            "INSERT INTO role (title, department_id) VALUES (?, ?)",
-            [role, departmentID],
-            (err, res) => {
-              if (err) throw err;
-              console.log(`${res.affectedRows} rows updated.`);
-            }
-          );
-          console.log(query.sql);
+          console.log(`${res.affectedRows} rows updated.`);
+          viewRoles();
         }
       );
     });
@@ -85,9 +78,9 @@ const createNewEmployee = () => {
           (err, res) => {
             if (err) throw err;
             console.log(`${res.affectedRows} rows updated.`);
+            viewEmployees();
           }
         );
-        console.log(query.sql);
       });
   });
 };
@@ -96,6 +89,7 @@ const viewDepartments = () => {
   connection.query("SELECT * FROM department", (err, res) => {
     if (err) throw err;
     console.log(cTable.getTable(res));
+    startingMenu();
   });
 };
 
@@ -105,6 +99,7 @@ const viewRoles = () => {
     (err, res) => {
       if (err) throw err;
       console.log(cTable.getTable(res));
+      startingMenu();
     }
   );
 };
@@ -115,6 +110,7 @@ const viewEmployees = () => {
     (err, res) => {
       if (err) throw err;
       console.log(cTable.getTable(res));
+      startingMenu();
     }
   );
 };
@@ -158,9 +154,9 @@ const updateEmployeeRole = (employeeId) => {
         (err, res) => {
           if (err) throw err;
           console.log(`${res.affectedRows} rows updated.`);
+          viewEmployees();
         }
       );
-      console.log(query.sql);
     });
   });
 };
@@ -180,9 +176,9 @@ const updateEmployeeManager = (employeeId) => {
           (err, res) => {
             if (err) throw err;
             console.log(`${res.affectedRows} rows updated.`);
+            viewEmployees();
           }
         );
-        console.log(query.sql);
       });
     }
   );
@@ -197,9 +193,9 @@ const updateEmployeeSalary = (employeeId) => {
       (err, res) => {
         if (err) throw err;
         console.log(`${res.affectedRows} rows updated.`);
+        viewEmployees();
       }
     );
-    console.log(query.sql);
   });
 };
 
@@ -218,38 +214,74 @@ const viewEmployeesByManager = () => {
           (err, res) => {
             if (err) throw err;
             console.log(cTable.getTable(res));
-            startingMenu();
+            startingMenu()
           }
         );
-        console.log(query.sql)
       });
     }
   );
 };
 
-const startingMenu = () => {
-  inquirer.prompt(starterPrompt).then(({ mainOptions }) => {
-    switch (mainOptions) {
-      case "Add Department":
-        return createNewDepartment();
-      case "Add Role":
-        return createNewRole();
-      case "Add Employee":
-        return createNewEmployee();
+const departmentMenu = () => {
+  inquirer.prompt(departmentMenuPrompts).then((response) => {
+    switch (response.option) {
       case "View Departments":
         return viewDepartments();
+      case "Add Departments":
+        return createNewDepartment();
+      case "Edit Department":
+        return editDepartment(); // write function
+      case "Delete Department":
+        return deleteDepartment(); // write function
+    }
+  });
+};
+
+const roleMenu = () => {
+  inquirer.prompt(roleMenuPrompts).then((response) => {
+    switch (response.option) {
       case "View Roles":
         return viewRoles();
+      case "Add Role":
+        return createNewRole();
+      case "Edit Role":
+        return editRole(); // write function
+      case "Delete Role":
+        return deleteRole(); // write function
+    }
+  });
+};
+
+const employeeMenu = () => {
+  inquirer.prompt(employeeMenuPrompts).then((response) => {
+    switch (response.option) {
       case "View Employees":
         return viewEmployees();
       case "View Employees By Manager":
         return viewEmployeesByManager();
-      case "Update Employee":
-        return updateEmployee();
+      case "Add Employee":
+        return createNewEmployee();
+      case "Edit Employee":
+        return updateEmployee(); // write function
+      case "Delete Role":
+        return deleteEmployee(); // write function
+    }
+  });
+};
+
+const startingMenu = () => {
+  inquirer.prompt(starterPrompt).then(({ mainOptions }) => {
+    switch (mainOptions) {
+      case "Departments":
+        return departmentMenu();
+      case "Roles":
+        return roleMenu();
+      case "Employees":
+        return employeeMenu();
       case "Quit":
         return connection.end();
     }
   });
-}
+};
 
 startingMenu();
