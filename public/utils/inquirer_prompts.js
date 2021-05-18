@@ -19,7 +19,7 @@ const addDepartmentPrompt = [
   {
     type: "input",
     name: "departmentName",
-    message: "What would like to name the department?"
+    message: "What would like to name the department?",
   },
 ];
 
@@ -30,12 +30,12 @@ const addRolePrompts = [
     message: "Choose department: ",
     choices: [
       // populated by function
-    ]
+    ],
   },
   {
     type: "input",
     name: "roleName",
-    message: "What would you like to name the role?"
+    message: "What would you like to name the role?",
   },
 ];
 
@@ -43,12 +43,12 @@ const addEmployeePrompts = [
   {
     type: "input",
     name: "employeeFirstName",
-    message: "First name?"
+    message: "First name?",
   },
   {
     type: "input",
     name: "employeeLastName",
-    message: "Last name?"
+    message: "Last name?",
   },
   {
     type: "list",
@@ -57,7 +57,24 @@ const addEmployeePrompts = [
     choices: [
       // populated by function
     ],
-  }
-]
+  },
+];
 
-module.exports = { starterPrompt, addDepartmentPrompt, addRolePrompts, addEmployeePrompts }
+const updateEmployeePrompts = [
+  {
+    type: "list",
+    name: "employee",
+    message: "Choose employee to update: ",
+    choices: [
+      // populated by function
+    ],
+  },
+];
+
+module.exports = {
+  starterPrompt,
+  addDepartmentPrompt,
+  addRolePrompts,
+  addEmployeePrompts,
+  updateEmployeePrompts,
+};

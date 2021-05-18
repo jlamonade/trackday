@@ -6,6 +6,7 @@ const {
   addDepartmentPrompt,
   addRolePrompts,
   addEmployeePrompts,
+  updateEmployeePrompts,
 } = require("./public/utils/inquirer_prompts");
 
 const connection = mysql.createConnection({
@@ -121,6 +122,16 @@ const viewEmployees = () => {
   );
 };
 
+const updateEmployee = () => {
+  connection.query(
+    "SELECT employee_id, CONCAT(first_name, ' ', last_name) AS name from employee",
+    (err, res) => {
+      if (err) throw err;
+      console.log(res);
+    }
+  );
+};
+
 inquirer.prompt(starterPrompt).then(({ mainOptions }) => {
   switch (mainOptions) {
     case "Add Department":
@@ -135,5 +146,7 @@ inquirer.prompt(starterPrompt).then(({ mainOptions }) => {
       return viewRoles();
     case "View Employees":
       return viewEmployees();
+    case "Update Employee":
+      return updateEmployee();
   }
 });
