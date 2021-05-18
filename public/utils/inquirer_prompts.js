@@ -10,6 +10,7 @@ const starterPrompt = [
       "View Departments",
       "View Roles",
       "View Employees",
+      "View Employees By Manger",
       "Update Employee",
     ],
   },

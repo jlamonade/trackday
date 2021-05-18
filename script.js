@@ -213,6 +213,12 @@ const createManagerChoicesArray = (data) => {
   return data.map((element) => new Choice(element.name, element.employee_id));
 };
 
+const viewEmployeesByManager = () => {
+  connection.query("SELECT CONCAT(first_name, ' ', last_name) AS name, employee_id, role.is_manager FROM employee JOIN role ON role.role_id = employee.role_id WHERE role.is_manager = true", (err, res) => {
+    console.log(res)
+  })
+}
+
 inquirer.prompt(starterPrompt).then(({ mainOptions }) => {
   switch (mainOptions) {
     case "Add Department":
@@ -227,6 +233,8 @@ inquirer.prompt(starterPrompt).then(({ mainOptions }) => {
       return viewRoles();
     case "View Employees":
       return viewEmployees();
+    case "View Employees By Manager":
+      return viewEmployeesByManager();
     case "Update Employee":
       return updateEmployee();
   }
