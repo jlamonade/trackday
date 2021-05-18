@@ -122,12 +122,33 @@ const viewEmployees = () => {
   );
 };
 
+class Choice {
+  constructor(name, value) {
+    this.name = name;
+    this.value = value;
+    this.short = `${value} ${name}`;
+  }
+}
+
+// function Choice(name, value) {
+//   this.name = name;
+//   this.value = value;
+// }
+
 const updateEmployee = () => {
   connection.query(
     "SELECT employee_id, CONCAT(first_name, ' ', last_name) AS name from employee",
     (err, res) => {
       if (err) throw err;
-      console.log(res);
+      // console.log(cTable.getTable(res));
+      const choicesArray = res.map((element) => {
+        return new Choice(element.name, element.employee_id)
+      })
+      const promptTemplate = updateEmployeePrompts;
+      promptTemplate[0].choices = choicesArray;
+      inquirer.prompt(promptTemplate).then((response) => {
+        console.log(response);
+      });
     }
   );
 };

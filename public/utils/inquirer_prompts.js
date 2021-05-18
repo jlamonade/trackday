@@ -63,11 +63,9 @@ const addEmployeePrompts = [
 const updateEmployeePrompts = [
   {
     type: "list",
-    name: "employee",
+    name: "employeeId",
     message: "Choose employee to update: ",
-    choices: [
-      // populated by function
-    ],
+    choices: [],
   },
 ];
 
