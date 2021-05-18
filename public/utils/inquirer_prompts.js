@@ -13,9 +13,9 @@ const departmentMenuPrompts = {
   message: "What would you like to do?",
   choices: [
     "View Departments",
-    "Add Departments",
-    "Update Departments",
-    "Delete Departments",
+    "Add Department",
+    "Update Department",
+    "Delete Department",
   ],
 };
 
@@ -47,15 +47,17 @@ const addDepartmentPrompt = [
   },
 ];
 
+const chooseDepartmentPrompt = {
+  type: "list",
+  name: "departmentId",
+  message: "Choose department: ",
+  choices: [
+    // populated by function
+  ],
+};
+
 const addRolePrompts = [
-  {
-    type: "list",
-    name: "departmentId",
-    message: "Choose department: ",
-    choices: [
-      // populated by function
-    ],
-  },
+  chooseDepartmentPrompt,
   {
     type: "input",
     name: "roleName",
@@ -132,6 +134,8 @@ const chooseManagerPrompt = {
   ],
 };
 
+
+
 const updateEmployeeSalaryPrompt = {
   type: "number",
   name: "salary",
@@ -150,4 +154,5 @@ module.exports = {
   departmentMenuPrompts,
   roleMenuPrompts,
   employeeMenuPrompts,
+  chooseDepartmentPrompt,
 };

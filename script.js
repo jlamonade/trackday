@@ -13,12 +13,13 @@ const {
   departmentMenuPrompts,
   roleMenuPrompts,
   employeeMenuPrompts,
+  chooseDepartmentPrompt,
 } = require("./public/utils/inquirer_prompts");
 const {
   createRoleChoicesArray,
   createManagerChoicesArray,
   createDepartmentChoicesArray,
-  createEmployeeChoiceArray
+  createEmployeeChoiceArray,
 } = require("./public/utils/util");
 
 const connection = mysql.createConnection({
@@ -217,6 +218,25 @@ const viewEmployeesByManager = () => {
       });
     }
   );
+};
+
+const deleteDepartment = () => {
+  connection.query("SELECT department_id, name FROM department", (err, res) => {
+    if (err) throw err;
+    const promptTemplate = chooseDepartmentPrompt;
+    chooseDepartmentPrompt.choices = createDepartmentChoicesArray(res);
+    inquirer.prompt(promptTemplate).then((response) => {
+      connection.query(
+        "DELETE FROM department WHERE department_id = ?",
+        [response.departmentId],
+        (err, res) => {
+          if (err) throw err;
+          console.log(`${res.affectedRows} rows updated`);
+          viewDepartments();
+        }
+      );
+    });
+  });
 };
 
 const departmentMenu = () => {
