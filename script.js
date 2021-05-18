@@ -18,6 +18,7 @@ const {
   createRoleChoicesArray,
   createManagerChoicesArray,
   createDepartmentChoicesArray,
+  createEmployeeChoiceArray
 } = require("./public/utils/util");
 
 const connection = mysql.createConnection({
@@ -71,10 +72,10 @@ const createNewEmployee = () => {
     // console.log(choicesArray);
     inquirer
       .prompt(promptTemplate)
-      .then(({ employeeFirstName, employeeLastName, role }) => {
+      .then(({ employeeFirstName, employeeLastName, role, salary }) => {
         const query = connection.query(
-          "INSERT INTO employee (first_name, last_name, role_id) VALUES (?, ?, ?)",
-          [employeeFirstName, employeeLastName, role],
+          "INSERT INTO employee (first_name, last_name, role_id, salary) VALUES (?, ?, ?, ?)",
+          [employeeFirstName, employeeLastName, role, salary],
           (err, res) => {
             if (err) throw err;
             console.log(`${res.affectedRows} rows updated.`);
@@ -120,12 +121,8 @@ const updateEmployee = () => {
     "SELECT employee_id, CONCAT(first_name, ' ', last_name) AS name from employee",
     (err, res) => {
       if (err) throw err;
-      // console.log(cTable.getTable(res));
-      const choicesArray = res.map((element) => {
-        return new Choice(element.name, element.employee_id);
-      });
       const promptTemplate = updateEmployeePrompts;
-      promptTemplate[0].choices = choicesArray;
+      promptTemplate[0].choices = createEmployeeChoiceArray(res);
       inquirer.prompt(promptTemplate).then((response) => {
         const employeeId = response.employeeId;
         switch (response.employeeOption) {
@@ -134,7 +131,7 @@ const updateEmployee = () => {
           case "Update Manager":
             return updateEmployeeManager(employeeId);
           case "Update Salary":
-            return updateEmployeeSalary(employeeId); // TODO: write function
+            return updateEmployeeSalary(employeeId);
         }
       });
     }
@@ -261,7 +258,7 @@ const employeeMenu = () => {
         return viewEmployeesByManager();
       case "Add Employee":
         return createNewEmployee();
-      case "Edit Employee":
+      case "Update Employee":
         return updateEmployee(); // write function
       case "Delete Role":
         return deleteEmployee(); // write function

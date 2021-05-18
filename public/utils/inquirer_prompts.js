@@ -87,6 +87,11 @@ const addEmployeePrompts = [
       // populated by function
     ],
   },
+  {
+    type: "number",
+    name: "salary",
+    message: "Salary?"
+  }
 ];
 
 const updateEmployeePrompts = [
