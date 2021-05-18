@@ -235,23 +235,29 @@ const viewEmployeesByManager = () => {
   );
 };
 
-inquirer.prompt(starterPrompt).then(({ mainOptions }) => {
-  switch (mainOptions) {
-    case "Add Department":
-      return createNewDepartment();
-    case "Add Role":
-      return createNewRole();
-    case "Add Employee":
-      return createNewEmployee();
-    case "View Departments":
-      return viewDepartments();
-    case "View Roles":
-      return viewRoles();
-    case "View Employees":
-      return viewEmployees();
-    case "View Employees By Manager":
-      return viewEmployeesByManager();
-    case "Update Employee":
-      return updateEmployee();
-  }
-});
+const startingMenu = () => {
+  inquirer.prompt(starterPrompt).then(({ mainOptions }) => {
+    switch (mainOptions) {
+      case "Add Department":
+        return createNewDepartment();
+      case "Add Role":
+        return createNewRole();
+      case "Add Employee":
+        return createNewEmployee();
+      case "View Departments":
+        return viewDepartments();
+      case "View Roles":
+        return viewRoles();
+      case "View Employees":
+        return viewEmployees();
+      case "View Employees By Manager":
+        return viewEmployeesByManager();
+      case "Update Employee":
+        return updateEmployee();
+      case "Quit":
+        return connection.end();
+    }
+  });
+}
+
+startingMenu();

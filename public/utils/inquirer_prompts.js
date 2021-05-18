@@ -12,6 +12,7 @@ const starterPrompt = [
       "View Employees",
       "View Employees By Manager",
       "Update Employee",
+      "Quit",
     ],
   },
 ];
