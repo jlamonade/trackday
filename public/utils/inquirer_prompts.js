@@ -14,7 +14,6 @@ const departmentMenuPrompts = {
   choices: [
     "View Departments",
     "Add Department",
-    "Update Department",
     "Delete Department",
   ],
 };
@@ -23,7 +22,7 @@ const roleMenuPrompts = {
   type: "list",
   name: "option",
   message: "What would you like to do?",
-  choices: ["View Roles", "Add Role", "Update Role", "Delete Role"],
+  choices: ["View Roles", "Add Role", "Delete Role"],
 };
 
 const employeeMenuPrompts = {
@@ -105,7 +104,7 @@ const chooseEmployeePrompt = {
   choices: [
     // populated by function
   ],
-}
+};
 
 const updateEmployeePrompts = [
   chooseEmployeePrompt,

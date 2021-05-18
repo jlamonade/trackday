@@ -289,8 +289,6 @@ const departmentMenu = () => {
         return viewDepartments();
       case "Add Departments":
         return createNewDepartment();
-      case "Edit Department":
-        return editDepartment(); // write function
       case "Delete Department":
         return deleteDepartment(); // write function
     }
@@ -304,8 +302,6 @@ const roleMenu = () => {
         return viewRoles();
       case "Add Role":
         return createNewRole();
-      case "Edit Role":
-        return editRole(); // write function
       case "Delete Role":
         return deleteRole(); // write function
     }
