@@ -214,7 +214,7 @@ const viewEmployeesByManager = () => {
           (err, res) => {
             if (err) throw err;
             console.log(cTable.getTable(res));
-            startingMenu()
+            startingMenu();
           }
         );
       });
