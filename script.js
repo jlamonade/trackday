@@ -65,7 +65,7 @@ const createNewRole = () => {
     });
   });
 };
-
+// TODO: create object array for choices for the prompts in this function
 const createNewEmployee = () => {
   connection.query("SELECT title FROM role", (err, res) => {
     if (err) throw err;
