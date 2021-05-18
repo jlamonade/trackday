@@ -89,6 +89,15 @@ const updateEmployeeRolePrompt = {
   }
 }
 
+const updateEmployeeManagerPrompt = {
+  type: "list",
+  name: "newManager",
+  message: "Choose a new manager: ",
+  choices: [
+    
+  ]
+}
+
 module.exports = {
   starterPrompt,
   addDepartmentPrompt,

@@ -94,6 +94,12 @@ const createRoleChoicesArray = (data) => {
   return data.map((element) => new Choice(element.title, element.role_id));
 };
 
+const createManagerChoicesArray = (data) => {
+  return data.map((element) => {
+    new Choice(element.name, element.employee_id);
+  });
+};
+
 const viewDepartments = () => {
   connection.query("SELECT * FROM department", (err, res) => {
     if (err) throw err;
@@ -165,6 +171,30 @@ const updateEmployeeRole = (employeeId) => {
       console.log(query.sql);
     });
   });
+};
+// TODO: update function to manager
+const updateEmployeeManager = (employeeId) => {
+  connection.query(
+    "SELECT CONCAT(first_name, ' ', last_name) AS name, employee_id, role.is_manager FROM employee JOIN role ON role.role_id = employee.role_id WHERE role.is_manager = true;",
+    (err, res) => {
+      if (err) throw err;
+      console.log(res);
+      const promptTemplate = updateEmployeeRolePrompt;
+      promptTemplate.choices = createManagerChoicesArray(res);
+      inquirer.prompt(promptTemplate).then((response) => {
+        const roleId = response.newManager;
+        const query = connection.query(
+          "UPDATE employee SET ? WHERE employee_id = ?",
+          [{ manager_id: roleId }, employeeId],
+          (err, res) => {
+            if (err) throw err;
+            console.log(`${res.affectedRows} rows updated.`);
+          }
+        );
+        console.log(query.sql);
+      });
+    }
+  );
 };
 
 inquirer.prompt(starterPrompt).then(({ mainOptions }) => {
