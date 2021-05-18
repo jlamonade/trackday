@@ -8,6 +8,7 @@ const {
   addEmployeePrompts,
   updateEmployeePrompts,
 } = require("./public/utils/inquirer_prompts");
+const Choice = require("./public/utils/classes");
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -121,19 +122,6 @@ const viewEmployees = () => {
     }
   );
 };
-
-class Choice {
-  constructor(name, value) {
-    this.name = name;
-    this.value = value;
-    this.short = `${value} ${name}`;
-  }
-}
-
-// function Choice(name, value) {
-//   this.name = name;
-//   this.value = value;
-// }
 
 const updateEmployee = () => {
   connection.query(
