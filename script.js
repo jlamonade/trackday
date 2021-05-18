@@ -9,6 +9,7 @@ const {
   updateEmployeePrompts,
   updateEmployeeRolePrompt,
   updateEmployeeManagerPrompt,
+  updateEmployeeSalaryPrompt,
 } = require("./public/utils/inquirer_prompts");
 const { Choice } = require("./public/utils/classes");
 
@@ -95,8 +96,6 @@ const createRoleChoicesArray = (data) => {
   return data.map((element) => new Choice(element.title, element.role_id));
 };
 
-
-
 const viewDepartments = () => {
   connection.query("SELECT * FROM department", (err, res) => {
     if (err) throw err;
@@ -116,7 +115,7 @@ const viewRoles = () => {
 
 const viewEmployees = () => {
   connection.query(
-    "SELECT CONCAT(e.first_name, ' ', e.last_name) AS name, role.title AS role, department.name AS department, CONCAT(m.first_name, ' ', m.last_name) AS manager FROM employee e JOIN role ON e.role_id = role.role_id JOIN department ON role.department_id = department.department_id LEFT JOIN employee m ON e.manager_id = m.employee_id;",
+    "SELECT CONCAT(e.first_name, ' ', e.last_name) AS name, role.title AS role, department.name AS department, CONCAT(m.first_name, ' ', m.last_name) AS manager, e.salary FROM employee e JOIN role ON e.role_id = role.role_id JOIN department ON role.department_id = department.department_id LEFT JOIN employee m ON e.manager_id = m.employee_id;",
     (err, res) => {
       if (err) throw err;
       console.log(cTable.getTable(res));
@@ -141,7 +140,7 @@ const updateEmployee = () => {
           case "Update Role":
             return updateEmployeeRole(employeeId);
           case "Update Manager":
-            return updateEmployeeManager(employeeId); // TODO: write function
+            return updateEmployeeManager(employeeId);
           case "Update Salary":
             return updateEmployeeSalary(employeeId); // TODO: write function
         }
@@ -194,6 +193,22 @@ const updateEmployeeManager = (employeeId) => {
   );
 };
 
+const updateEmployeeSalary = (employeeId) => {
+  inquirer.prompt(updateEmployeeSalaryPrompt).then((response) => {
+    const salary = response.salary;
+    const query = connection.query(
+      "UPDATE employee SET ? WHERE employee_id = ?",
+      [{ salary: salary }, employeeId],
+      (err, res) => {
+        if (err) throw err;
+        console.log(`${res.affectedRows} rows updated.`);
+      }
+    );
+    console.log(query.sql)
+  });
+};
+
+// TODO: move to utils
 const createManagerChoicesArray = (data) => {
   return data.map((element) => new Choice(element.name, element.employee_id));
 };

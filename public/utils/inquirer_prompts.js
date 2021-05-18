@@ -98,6 +98,12 @@ const updateEmployeeManagerPrompt = {
   ]
 }
 
+const updateEmployeeSalaryPrompt = {
+  type: "number",
+  name: "salary",
+  message: "Enter new salary: ",
+}
+
 module.exports = {
   starterPrompt,
   addDepartmentPrompt,
@@ -105,5 +111,6 @@ module.exports = {
   addEmployeePrompts,
   updateEmployeePrompts,
   updateEmployeeRolePrompt,
-  updateEmployeeManagerPrompt
+  updateEmployeeManagerPrompt,
+  updateEmployeeSalaryPrompt,
 };

@@ -23,6 +23,7 @@ CREATE TABLE employee(
 	employee_id INT AUTO_INCREMENT,
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
+    salary INTEGER,
     role_id INT,
     manager_id INT,
     PRIMARY KEY (employee_id),
@@ -57,19 +58,19 @@ VALUES (7, 'UX', 3);
 INSERT INTO role (role_id, title, department_id) 
 VALUES (8, 'UI', 3);
 
-INSERT INTO employee (employee_id, first_name, last_name, role_id) 
-VALUES (1, "John", "K", 1);
-INSERT INTO employee (employee_id, first_name, last_name, role_id) 
-VALUES (2, "Jason", "Lam", 3);
-INSERT INTO employee (employee_id, first_name, last_name, role_id) 
-VALUES (3, "Jeremiah", "K", 6);
-INSERT INTO employee (employee_id, first_name, last_name, role_id, manager_id) 
-VALUES (4, "Joey", "K", 4, 2);
-INSERT INTO employee (employee_id, first_name, last_name, role_id, manager_id) 
-VALUES (5, "Joseph", "K", 5, 2);
-INSERT INTO employee (employee_id, first_name, last_name, role_id, manager_id) 
-VALUES (6, "Jeff", "K", 2, 1);
-INSERT INTO employee (employee_id, first_name, last_name, role_id, manager_id) 
-VALUES (7, "Joshua", "K", 7, 3);
-INSERT INTO employee (employee_id, first_name, last_name, role_id, manager_id) 
-VALUES (8, "Jack", "L", 8, 3);
+INSERT INTO employee (employee_id, first_name, last_name, role_id, salary) 
+VALUES (1, "John", "K", 1, 200000);
+INSERT INTO employee (employee_id, first_name, last_name, role_id, salary) 
+VALUES (2, "Jason", "Lam", 3, 300000);
+INSERT INTO employee (employee_id, first_name, last_name, role_id, salary) 
+VALUES (3, "Jeremiah", "K", 6, 150000);
+INSERT INTO employee (employee_id, first_name, last_name, role_id, manager_id, salary) 
+VALUES (4, "Joey", "K", 4, 2, 70000);
+INSERT INTO employee (employee_id, first_name, last_name, role_id, manager_id, salary) 
+VALUES (5, "Joseph", "K", 5, 2, 100000);
+INSERT INTO employee (employee_id, first_name, last_name, role_id, manager_id, salary) 
+VALUES (6, "Jeff", "K", 2, 1, 35000);
+INSERT INTO employee (employee_id, first_name, last_name, role_id, manager_id, salary) 
+VALUES (7, "Joshua", "K", 7, 3, 89000);
+INSERT INTO employee (employee_id, first_name, last_name, role_id, manager_id, salary) 
+VALUES (8, "Jack", "L", 8, 3, 120000);
